@@ -7,9 +7,20 @@ function App() {
   const [isEditable, setIsEditable] = useState<boolean>(true);
   const [showToolbar, setShowToolbar] = useState<boolean>(true);
   const [placeholder, setPlaceholder] = useState<string>('Start writing...');
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+
+    console.log('ACCESS_KEY:', import.meta.env.ACCESS_KEY);
+    if (import.meta.env.ACCESS_KEY) {
+      const key = params.get('key');
+      console.log(`Editor Key: ${key}`);
+      if (key !== import.meta.env.ACCESS_KEY) {
+        setIsDisabled(true);
+        return;
+      }
+    }
 
     const contentParam = params.get('content');
     if (contentParam) {
@@ -41,6 +52,14 @@ function App() {
       }
     }
   }, []);
+
+  if (isDisabled) {
+    return (
+      <div>
+        Invalid Access Key
+      </div>
+    );
+  }
 
   return (
     <SimpleEditor
