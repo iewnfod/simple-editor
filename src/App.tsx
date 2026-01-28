@@ -22,6 +22,15 @@ function App() {
       }
     }
 
+    const theme = params.get('theme');
+    if (theme === 'dark') {
+      document.body.classList.remove('light');
+      document.body.classList.add('dark');
+    } else if (theme === 'light') {
+      document.body.classList.remove('dark');
+      document.body.classList.add('light');
+    }
+
     const contentParam = params.get('content');
     if (contentParam) {
       try {
