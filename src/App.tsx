@@ -8,6 +8,21 @@ function App() {
   const [showToolbar, setShowToolbar] = useState<boolean>(true);
   const [placeholder, setPlaceholder] = useState<string>('Start writing...');
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => setIsDarkMode(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  useEffect(() => {
+    const initialDarkMode =
+      !!document.querySelector('meta[name="color-scheme"][content="dark"]') ||
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setIsDarkMode(initialDarkMode);
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -22,13 +37,12 @@ function App() {
       }
     }
 
-    const theme = params.get('theme');
+    const theme = params.get('theme')?.trim();
+    console.log('Expect theme:', theme);
     if (theme === 'dark') {
-      document.body.classList.remove('light');
-      document.body.classList.add('dark');
+      setIsDarkMode(true);
     } else if (theme === 'light') {
-      document.body.classList.remove('dark');
-      document.body.classList.add('light');
+      setIsDarkMode(false);
     }
 
     const contentParam = params.get('content');
@@ -61,6 +75,11 @@ function App() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    console.log('Setting dark mode:', isDarkMode);
+    document.documentElement.classList.toggle("dark", isDarkMode);
+  }, [isDarkMode]);
 
   if (isDisabled) {
     return (
