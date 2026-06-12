@@ -27,10 +27,8 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
-    console.log('ACCESS_KEY:', import.meta.env.ACCESS_KEY);
     if (import.meta.env.ACCESS_KEY) {
       const key = params.get('key');
-      console.log(`Editor Key: ${key}`);
       if (key !== import.meta.env.ACCESS_KEY) {
         setIsDisabled(true);
         return;
